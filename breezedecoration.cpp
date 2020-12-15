@@ -307,6 +307,17 @@ namespace Breeze
     QColor Decoration::fontColor() const
     {
         auto c = client().toStrongRef().data();
+        
+       if ( !matchColorForTitleBar() ) {
+            if ( m_animation->state() == QAbstractAnimation::Running ) {
+                return KColorUtils::mix(
+                    c->color( ColorGroup::Inactive, ColorRole::Foreground ),
+                    c->color( ColorGroup::Active, ColorRole::Foreground ),
+                    m_opacity );
+            }
+
+            return  c->color( c->isActive() ? ColorGroup::Active : ColorGroup::Inactive, ColorRole::Foreground );
+        }
 
         QColor darkTextColor( !c->isActive() && matchColorForTitleBar() ? QColor(81, 102, 107) : QColor(34, 45, 50) );
         QColor lightTextColor( !c->isActive() && matchColorForTitleBar() ? QColor(192, 193, 194) : QColor(250, 251, 252) );
